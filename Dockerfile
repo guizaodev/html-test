@@ -2,4 +2,4 @@
 FROM nginx:alpine
 
 # Copie o arquivo index.html para o diretório padrão do nginx
-COPY index.html /usr/share/nginx/html/
+COPY src /usr/share/nginx/html/
