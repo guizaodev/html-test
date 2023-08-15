@@ -3,3 +3,4 @@ FROM nginx:alpine
 
 # Copie o arquivo index.html para o diretório padrão do nginx
 COPY src /usr/share/nginx/html/
+CMD ["nginx", "-g", "daemon off;"]
