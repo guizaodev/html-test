@@ -36,20 +36,20 @@ pipeline {
                 }
             }
         }
-        post{
-            success {
-                withCredentials([
-                    string(credentialsId: 'github-status', variable: 'GITHUB_TOKEN')
-                ]){
-                    setGitHubStatus('success', 'Deployment succeeded')
-                }
+    }
+    post{
+        success {
+            withCredentials([
+                string(credentialsId: 'github-status', variable: 'GITHUB_TOKEN')
+            ]){
+                setGitHubStatus('success', 'Deployment succeeded')
             }
-            failure{
-                withCredentials([
-                    string(credentialsId: 'github-status', variable: 'GITHUB_TOKEN')
-                ]){
-                    setGitHubStatus('failure', 'Deployment failed')
-                }
+        }
+        failure{
+            withCredentials([
+                string(credentialsId: 'github-status', variable: 'GITHUB_TOKEN')
+            ]){
+                setGitHubStatus('failure', 'Deployment failed')
             }
         }
     }
