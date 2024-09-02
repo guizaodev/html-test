@@ -64,3 +64,23 @@ pipeline {
         }
     }
 }
+
+def setGitHubStatus(String state, String description) {
+    def sha = env.GIT_COMMIT ?: sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+    def context = 'Jenkins/Deployment'
+    def gitUrl = env.GIT_URL 
+    def repoParts = gitUrl.tokenize('/')[-2..-1] // Pega as duas últimas partes da URL
+    def REPO_NAME = repoParts.join('/') - '.git' 
+    echo "Nome do repositório: ${REPO_NAME}"
+    
+    sh """
+    curl -s -X POST -H "Authorization: token ${GITHUB_TOKEN}" \
+         -H "Content-Type: application/json" \
+         -d '{
+           "state": "${state}",
+           "description": "${description}",
+           "context": "${context}"
+         }' \
+         https://api.github.com/repos/${REPO_NAME}/statuses/${sha}
+    """
+}
