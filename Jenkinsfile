@@ -4,6 +4,11 @@ pipeline {
     stages {
         stage('Initialize'){
             steps{
+                withCredentials([
+                    string(credentialsId: 'github-status', variable: 'GITHUB_TOKEN')
+                ]){
+                    setGitHubStatus('pending', 'Deployment started')
+                }
                 script{
                     def dockerHome = tool 'Docker'
                     env.PATH = "${dockerHome}/bin:${env.PATH}"
@@ -28,6 +33,22 @@ pipeline {
                     
                     // Iniciar um novo container com a imagem criada
                     sh 'docker run -d --name http-test2 -p 8444:80 http-test2:latest'
+                }
+            }
+        }
+        post{
+            success {
+                withCredentials([
+                    string(credentialsId: 'github-status', variable: 'GITHUB_TOKEN')
+                ]){
+                    setGitHubStatus('success', 'Deployment succeeded')
+                }
+            }
+            failure{
+                withCredentials([
+                    string(credentialsId: 'github-status', variable: 'GITHUB_TOKEN')
+                ]){
+                    setGitHubStatus('failure', 'Deployment failed')
                 }
             }
         }
